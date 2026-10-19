@@ -38,3 +38,43 @@ Los plazos de retención viven en `config/retention.ts`. El flag `site.reservar_
 ## Alcance de esta fase
 
 F0 deja el repo, la CI, el esquema inicial y el seed. F1 a F8 no están implementadas. F8b sigue bloqueada hasta B5, B3-CMS, dominio verificado y contrato del piloto.
+
+## Evidencia F0
+
+`supabase db reset --local` corrió en el job `database` del run [39334552519](https://github.com/lucashg11/plataforma-modular/actions/runs/39334552519) (19/10/2026, rama `fix/f0-qa`). Esta máquina no tiene Docker.
+
+```
+Resetting local database...
+Recreating database...
+Initialising schema...
+Seeding globals from roles.sql...
+Applying migration 20261019120000_tenants.sql...
+Seeding data from supabase/seed.sql...
+Restarting containers...
+Finished supabase db reset on branch fix/f0-qa.
+```
+
+El mismo job siguió así:
+
+```
+supabase db query --local -f scripts/assert-seed.sql
+DO
+
+supabase db query --local -f scripts/assert-no-agenda-stub.sql
+DO
+
+supabase test db supabase/tests/seed_plans.test.sql
+supabase/tests/seed_plans.test.sql .. ok
+All tests successful.
+Files=1, Tests=10,  1 wallclock secs ( 0.01 usr + 0.00 sys = 0.01 CPU)
+Result: PASS
+
+ENABLE_TEST_MODULES=true pnpm db:fixtures
+$ node scripts/apply-test-fixtures.mjs
+INSERT 0 2
+
+supabase db query --local -f scripts/assert-agenda-stub.sql
+DO
+```
+
+`verify` y `database` terminaron en verde en ese run. El stub de Agenda entra solo con `ENABLE_TEST_MODULES=true` (`INSERT 0 2`: `pro` en `read_only`, `full` en `deleted`).
