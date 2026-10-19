@@ -6,22 +6,38 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "typecheck": "next typegen && tsc --noEmit",
+    "test": "vitest run",
+    "secrets": "secretlint --secretlintignore .secretlintignore \"**/*\"",
+    "db:reset": "supabase db reset --local",
+    "db:fixtures": "node scripts/apply-test-fixtures.mjs",
+    "db:assert-seed": "supabase db query --local -f scripts/assert-seed.sql"
+  },
+  "engines": {
+    "node": ">=24"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.5.0",
     "next": "16.4.2",
     "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "react-dom": "19.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
+    "@secretlint/secretlint-rule-preset-recommend": "^13.0.7",
     "@tailwindcss/turbopack": "^4",
-    "@types/node": "^20",
+    "@types/node": "^24.19.2",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "secretlint": "^13.0.7",
+    "supabase": "^2.121.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^5.0.5"
   },
   "packageManager": "pnpm@12.10.1"
 }

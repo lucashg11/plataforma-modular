@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Plataforma modular
 
-## Getting Started
+MVP de sitio público y CMS, multi-tenant por hostname. Un solo deploy. Esta base es F0: todavía no hay acceso, editor ni ciclo de vida.
 
-First, run the development server:
+Fuentes congeladas: [docs/architecture.md](docs/architecture.md).
+
+## Requisitos
+
+- Node.js 24
+- pnpm 12
+- Docker, solo para `supabase db reset` (el CLI local no arranca Postgres sin Docker)
+
+## Comandos
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
+pnpm lint
+pnpm typecheck
+pnpm test
+pnpm secrets
+pnpm build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Con Docker:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm exec supabase db start
+pnpm db:reset
+pnpm db:assert-seed
+pnpm exec supabase test db supabase/tests/seed_plans.test.sql
+ENABLE_TEST_MODULES=true pnpm db:fixtures
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+`pnpm db:reset` carga tres tenants ficticios, uno por plan (`starter`, `pro`, `full`), con CMS activo. El stub de Agenda no entra en ese seed. Solo se aplica con `ENABLE_TEST_MODULES=true`.
 
-## Learn More
+Los plazos de retención viven en `config/retention.ts`. El flag `site.reservar_cta_without_agenda` vive en `config/flags.ts` y está apagado. Ninguno de los dos es una variable de entorno.
 
-To learn more about Next.js, take a look at the following resources:
+## Alcance de esta fase
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+F0 deja el repo, la CI, el esquema inicial y el seed. F1 a F8 no están implementadas. F8b sigue bloqueada hasta B5, B3-CMS, dominio verificado y contrato del piloto.

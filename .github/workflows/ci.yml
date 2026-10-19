@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm secrets
+      - run: pnpm build
+
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.121.0
+      - run: supabase db start
+      - run: supabase db reset --local
+      - run: supabase db query --local -f scripts/assert-seed.sql
+      - run: supabase db query --local -f scripts/assert-no-agenda-stub.sql
+      - run: supabase test db supabase/tests/seed_plans.test.sql
+      - run: ENABLE_TEST_MODULES=true pnpm db:fixtures
+      - run: supabase db query --local -f scripts/assert-agenda-stub.sql
