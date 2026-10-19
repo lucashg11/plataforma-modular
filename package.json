@@ -9,7 +9,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "secrets": "secretlint --secretlintignore .secretlintignore \"**/*\"",
+    "secrets": "secretlint --secretlintignore .secretlintignore \"**/*\" \".*\" \"**/.*\" \"**/.*/**/*\" \".github/**/*\"",
     "db:reset": "supabase db reset --local",
     "db:fixtures": "node scripts/apply-test-fixtures.mjs",
     "db:assert-seed": "supabase db query --local -f scripts/assert-seed.sql"

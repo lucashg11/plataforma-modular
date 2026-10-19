@@ -39,6 +39,7 @@ select is_empty(
 select throws_ok(
   $$insert into public.tenants (name, slug, plan) values ('Intruso', 'intruso-anon', 'starter')$$,
   '42501',
+  NULL,
   'anon cannot insert a tenant'
 );
 
@@ -52,6 +53,7 @@ select is_empty(
 select throws_ok(
   $$insert into public.tenants (name, slug, plan) values ('Intruso', 'intruso-auth', 'starter')$$,
   '42501',
+  NULL,
   'authenticated cannot insert a tenant'
 );
 
