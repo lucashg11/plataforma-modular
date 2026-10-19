@@ -1,6 +1,6 @@
 # Evidencia F0
 
-Fecha: 19/10/2026. Máquina local sin Docker: `supabase db reset` no se pudo correr acá. La misma migración, el seed y las aserciones SQL corrieron en PGlite (Postgres embebido) con `pnpm test`. La CI (`.github/workflows/ci.yml`) corre `supabase db reset` cuando hay un PR; ese job todavía no se ejecutó porque el repo no tiene remoto.
+Fecha: 19/10/2026. La salida de `supabase db reset --local` está en el [README](../../README.md), tomada del job `database` del run [39334552519](https://github.com/lucashg11/plataforma-modular/actions/runs/39334552519). Esta máquina no tiene Docker. `pnpm test` además ejecuta la misma migración y el seed en PGlite.
 
 ## Comandos locales
 
